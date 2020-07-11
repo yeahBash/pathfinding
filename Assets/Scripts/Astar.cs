@@ -15,4 +15,9 @@ public class Astar : MonoBehaviour
     {
         
     }
+
+    public void FindPath()
+    {
+        
+    }
 }
