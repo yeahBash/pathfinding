@@ -37,7 +37,7 @@ public class Manager : MonoBehaviour
     [SerializeField] private GameObject _buttonPrefab;
     public static Dictionary<EditMode, VisualOfMode> EditModeToVisual {get; private set;}
     //TODO change to private
-    public static State CurrentState = State.Idle;
+    public static State CurrentState;
     public static Color CurrentColor {get; private set;}
     private static EditMode _currentEditMode;
     public static EditMode CurrentEditMode 
@@ -55,6 +55,8 @@ public class Manager : MonoBehaviour
 
     private void Start()
     {
+        CurrentState = State.Idle;
+
         SetupButtonsAndVisual();
 
         CurrentEditMode = EditMode.Walk;

@@ -13,6 +13,7 @@ public class Astar : MonoBehaviour
 
     void Start()
     {
+        _startNode = _finishNode = null;
         _battleField = GetComponent<BattleField>();
         OnBattleFieldChanged += SetBattleFieldNode;
     }
@@ -38,20 +39,34 @@ public class Astar : MonoBehaviour
                 break;
         }
 
-        FindPath();
-    }
-
-    private void FindPath()
-    {
         if (_startNode == null || _finishNode == null)
         {
             _battleField.ResetPath();
             return;
         }
 
-        Debug.Log("start searching");
+        OnSearchingComplete(FindPath());
+    }
 
+    private void OnSearchingComplete(bool isFound)
+    {
+        Debug.Log(isFound ? "found" : "not found");
+        Manager.CurrentState = State.Idle;
+
+        if (isFound)
+        {
+            RetracePath(_startNode, _finishNode);
+        } 
+        else
+        {
+            _battleField.ResetPath();
+        }
+    }
+
+    private bool FindPath()
+    {
         Manager.CurrentState = State.SearchingPath;
+        
         List<Node> openSet = new List<Node>();
         HashSet<Node> closedSet = new HashSet<Node>();
 
@@ -73,10 +88,7 @@ public class Astar : MonoBehaviour
 
             if (currentNode == _finishNode)
             {
-                Debug.Log("found");
-                Manager.CurrentState = State.Idle;
-                RetracePath(_startNode, _finishNode);
-                return;
+                return true;
             }
                 
             foreach(Node neighbour in _battleField.GetNeighbours(currentNode))
@@ -100,7 +112,7 @@ public class Astar : MonoBehaviour
 
         }
         
-        Manager.CurrentState = State.Idle;
+        return false;
     }
 
     private void RetracePath(Node startNode, Node finishNode)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO fix this - ORDER SHOULD BE THE SAME AS EDITMODE ENUM ORDER!!!
 public enum NodeType
 {
     // TODO make reference from EditMode
@@ -72,10 +73,7 @@ public class Node : MonoBehaviour
     {
         _material = GetComponent<MeshRenderer>().material;
 
-        // TODO
-        _nodeType = NodeType.Walkable;
-        CellColor = Manager.EditModeToVisual[(EditMode)_nodeType].color;
-        _previousColor = CellColor;
+        NodeType = NodeType.Walkable;
     }
 
     void OnMouseEnter()

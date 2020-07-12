@@ -39,6 +39,7 @@ public class BattleField : MonoBehaviour
         if (_path != null)
         {
             SetPathTexture(originalTexture);
+            _path = null;
         }
     }
     private void SetPathTexture(Texture2D texture)
@@ -80,7 +81,9 @@ public class BattleField : MonoBehaviour
             {
                 GameObject cellNode = Instantiate(_cellNode, _grid.GetCellCenterLocal(new Vector3Int(i,j,0)), Quaternion.identity);
                 cellNode.transform.SetParent(_cells.transform);
-                cellNode.transform.localScale = _grid.cellSize;
+                cellNode.transform.localScale = _grid.cellLayout == GridLayout.CellLayout.Rectangle ? _grid.cellSize : 0.5f*_grid.cellSize;
+                
+                // TODO depend on cell swizzie 
 
                 int x = i + BATTLEFIELD_SIZE/2;
                 int y = j + BATTLEFIELD_SIZE/2;

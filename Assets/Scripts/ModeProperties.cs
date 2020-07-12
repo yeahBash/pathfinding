@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [CreateAssetMenu(fileName = "New Mode Properties", menuName = "Mode Properties")]
 public class ModeProperties : ScriptableObject
 {
