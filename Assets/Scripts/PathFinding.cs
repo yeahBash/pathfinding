@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BattleField))]
-public class Astar : MonoBehaviour
+public class PathFinding : MonoBehaviour
 {
     private BattleField _battleField;
+    [SerializeField] private UnityEngine.UI.Text text;
     public static Action<NodeType, NodeType, Node> OnBattleFieldChanged;
     [SerializeField] private Node _startNode;
     [SerializeField] private Node _finishNode;
@@ -45,12 +46,14 @@ public class Astar : MonoBehaviour
             return;
         }
 
-        OnSearchingComplete(FindPath());
+        Manager.CurrentState = State.SearchingPath;
+        text.text = "Searching path...";
+        OnSearchingComplete(AstarPathFinding());
     }
 
     private void OnSearchingComplete(bool isFound)
     {
-        Debug.Log(isFound ? "found" : "not found");
+        text.text = isFound ? "found" : "not found";
         Manager.CurrentState = State.Idle;
 
         if (isFound)
@@ -63,10 +66,8 @@ public class Astar : MonoBehaviour
         }
     }
 
-    private bool FindPath()
+    private bool AstarPathFinding()
     {
-        Manager.CurrentState = State.SearchingPath;
-        
         List<Node> openSet = new List<Node>();
         HashSet<Node> closedSet = new HashSet<Node>();
 

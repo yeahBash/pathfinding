@@ -94,7 +94,7 @@ public class Node : MonoBehaviour
         {
             NodeType previousNodeType = NodeType;
             NodeType = managerMode;
-            Astar.OnBattleFieldChanged(previousNodeType, NodeType, this);
+            PathFinding.OnBattleFieldChanged(previousNodeType, NodeType, this);
         }
     }
 }

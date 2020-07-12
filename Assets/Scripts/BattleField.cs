@@ -18,6 +18,12 @@ public class BattleField : MonoBehaviour
     private void Awake()
     {
         _grid = GetComponent<Grid>();
+        if (_grid.cellSwizzle != GridLayout.CellSwizzle.XYZ && _grid.cellSwizzle != GridLayout.CellSwizzle.YXZ) 
+        {
+            _grid.cellSwizzle = GridLayout.CellSwizzle.XYZ;
+            Debug.LogAssertion("Grid cell swizzie must be XYZ or YXZ. Changed to XYZ.");
+        }
+
         originalTexture = _cellNode.GetComponent<MeshRenderer>().sharedMaterial.mainTexture as Texture2D;
     }
 
