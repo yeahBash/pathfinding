@@ -5,20 +5,65 @@ using UnityEngine;
 [RequireComponent(typeof(Grid))]
 public class BattleField : MonoBehaviour
 {
+    private Texture2D originalTexture; 
+    [SerializeField] private Texture2D pathTexture; 
     const int BATTLEFIELD_SIZE = 50;
     private Grid _grid;
+
+    private List<Node> _path;
     private Node[,] _nodes = new Node[BATTLEFIELD_SIZE, BATTLEFIELD_SIZE];
     [SerializeField] GameObject _cells;
     [SerializeField] GameObject _cellNode;
     private void Awake()
     {
         _grid = GetComponent<Grid>();
+        originalTexture = _cellNode.GetComponent<MeshRenderer>().sharedMaterial.mainTexture as Texture2D;
     }
 
     void Start()
     {
         CreateBattleField();
         Camera.main.orthographicSize *= Mathf.Max(_grid.cellSize.x, _grid.cellSize.y) + Mathf.Max(_grid.cellGap.x, _grid.cellGap.y);
+    }
+
+    public void DrawPath(List<Node> path)
+    {
+        if (_path != null)
+        {
+            foreach (Node p in _path)
+            {
+                p.Texture = originalTexture;
+            }
+        }
+
+        _path = path;
+        foreach (Node p in _path)
+        {
+            p.Texture = pathTexture;
+        }
+    }
+
+    public List<Node> GetNeighbours(Node node)
+    {
+        List<Node> neighbours = new List<Node>();
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0)
+                    continue;
+
+                int checkX = node.x + x;
+                int checkY = node.y + y;
+
+                if (checkX >= 0 && checkX < BATTLEFIELD_SIZE && checkY >= 0 && checkY < BATTLEFIELD_SIZE)
+                {
+                    neighbours.Add(_nodes[checkX, checkY]);
+                }
+            }
+        }
+        return neighbours;
     }
 
     private void CreateBattleField()
@@ -35,7 +80,11 @@ public class BattleField : MonoBehaviour
                 int y = j + BATTLEFIELD_SIZE/2;
                 cellNode.name = x.ToString() + " " + y.ToString();
 
-                _nodes[x,y] = cellNode.GetComponent<Node>();
+                Node node;
+                node = cellNode.GetComponent<Node>();
+                node.x = x;
+                node.y = y;
+                _nodes[x,y] = node;
             }
         }
     }

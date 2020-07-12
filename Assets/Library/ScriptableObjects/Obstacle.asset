@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e735595d08501740b7c6a6a9433add9, type: 3}
   m_Name: Obstacle
   m_EditorClassIdentifier: 
-  mode: 3
+  mode: 2
   buttonSprite: {fileID: 21300000, guid: 70d5b660e3f51e944bc20b04f57c4919, type: 3}
   cursorTexture: {fileID: 2800000, guid: 51340f2b45650e444b9b5a74326349c6, type: 3}
   cellColor: {r: 0, g: 0, b: 0, a: 1}

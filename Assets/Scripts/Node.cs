@@ -8,11 +8,26 @@ public enum NodeType
     Start,
     Finish,
     Obstacle,
-    NonObstacle
+    Walkable
 }
 public class Node : MonoBehaviour
 {
     [SerializeField] private NodeType _nodeType;
+    public int x;
+    public int y;
+
+    public int gCost;
+    public int hCost;
+    public int fCost
+    {
+        get
+        {
+            return gCost + hCost;
+        }
+    } 
+
+    public Node parent;
+    
     public NodeType NodeType
     {
         get
@@ -23,15 +38,13 @@ public class Node : MonoBehaviour
         {
             // TODO change color
             _nodeType = value;
-            CellColor = Manager.ModeToVisual[(EditMode)value].color;
+            CellColor = Manager.EditModeToVisual[(EditMode)value].color;
             _previousColor = CellColor;
-            Astar.Path(value, this);
         }
     }
 
     private Material _material;
     [SerializeField] private Color _cellColor;
-
     private Color CellColor
     {
         get 
@@ -45,10 +58,23 @@ public class Node : MonoBehaviour
         }
     }
     [SerializeField] private Color _previousColor;
+    public Texture2D Texture 
+    {
+        set
+        {
+            _material.mainTexture = value;
+        }
+    }
+
+
     void Awake()
     {
         _material = GetComponent<MeshRenderer>().material;
-        NodeType = NodeType.NonObstacle;
+
+        // TODO
+        _nodeType = NodeType.Walkable;
+        CellColor = Manager.EditModeToVisual[(EditMode)_nodeType].color;
+        _previousColor = CellColor;
     }
 
     void OnMouseEnter()
@@ -64,6 +90,11 @@ public class Node : MonoBehaviour
 
     void OnMouseDown()
     {
-        NodeType = (NodeType)Manager.CurrentMode;
+        NodeType managerMode = (NodeType)Manager.CurrentEditMode;
+        if (Manager.CurrentState == State.Idle && NodeType != managerMode)
+        {
+            NodeType = managerMode;
+            Astar.OnBattleFieldChanged(NodeType, this);
+        }
     }
 }

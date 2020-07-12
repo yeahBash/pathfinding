@@ -9,8 +9,15 @@ public enum EditMode
     Start,
     Finish,
     Obstacle,
-    NonObstacle
+    Walk
 }
+
+public enum State
+{
+    Idle,
+    SearchingPath
+}
+
 public struct VisualOfMode
 {
     public VisualOfMode(Texture2D tex, Color col)
@@ -26,21 +33,22 @@ public struct VisualOfMode
 public class Manager : MonoBehaviour
 {
     [SerializeField] private ModeProperties[] _modeProperties;
-    public static Dictionary<EditMode, VisualOfMode> ModeToVisual {get; private set;}
-
     [SerializeField] private VerticalLayoutGroup _buttonsLayout;
     [SerializeField] private GameObject _buttonPrefab;
-    private static EditMode _currentMode;
+    public static Dictionary<EditMode, VisualOfMode> EditModeToVisual {get; private set;}
+    //TODO change to private
+    public static State CurrentState = State.Idle;
     public static Color CurrentColor {get; private set;}
-    public static EditMode CurrentMode 
+    private static EditMode _currentEditMode;
+    public static EditMode CurrentEditMode 
     {
         get 
         {
-            return _currentMode;
+            return _currentEditMode;
         } 
         private set 
         {
-            _currentMode = value;
+            _currentEditMode = value;
             ChangeCursorAndColor(value);
         }
     }
@@ -49,12 +57,12 @@ public class Manager : MonoBehaviour
     {
         SetupButtonsAndVisual();
 
-        CurrentMode = EditMode.NonObstacle;
+        CurrentEditMode = EditMode.Walk;
     }
 
     private void SetupButtonsAndVisual()
     {
-        ModeToVisual = new Dictionary<EditMode, VisualOfMode>();
+        EditModeToVisual = new Dictionary<EditMode, VisualOfMode>();
 
         foreach (ModeProperties mp in _modeProperties)
         {   
@@ -62,7 +70,7 @@ public class Manager : MonoBehaviour
             SetButtons(mp);
 
             // setup visual
-            ModeToVisual[mp.mode] = new VisualOfMode(mp.cursorTexture, mp.cellColor);
+            EditModeToVisual[mp.mode] = new VisualOfMode(mp.cursorTexture, mp.cellColor);
         }
     }
 
@@ -75,16 +83,16 @@ public class Manager : MonoBehaviour
         Button btn = btnGo.GetComponent<Button>();
         Image img = btnGo.GetComponent<Image>();
 
-        btn.onClick.AddListener(() => CurrentMode = mp.mode);
+        btn.onClick.AddListener(() => CurrentEditMode = mp.mode);
         img.sprite = mp.buttonSprite;
     }
 
     private static void ChangeCursorAndColor(EditMode md)
     {
-        Cursor.SetCursor(ModeToVisual[md].texture, Vector3.zero, CursorMode.Auto);
-        CurrentColor = ModeToVisual[md].color;
+        Cursor.SetCursor(EditModeToVisual[md].texture, Vector3.zero, CursorMode.Auto);
+        CurrentColor = EditModeToVisual[md].color;
         Debug.Log(CurrentColor);
-        Debug.Log(CurrentMode);
+        Debug.Log(CurrentEditMode);
     }
 
     void OnValidate()
