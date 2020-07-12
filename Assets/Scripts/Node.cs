@@ -2,30 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum NodeType
+{
+    // TODO make reference from EditMode
+    Start,
+    Finish,
+    Obstacle,
+    NonObstacle
+}
 public class Node : MonoBehaviour
 {
-    public bool IsObstacle {get; set;}
+    [SerializeField] private NodeType _nodeType;
+    public NodeType NodeType
+    {
+        get
+        {
+            return _nodeType;
+        }
+        set
+        {
+            // TODO change color
+            _nodeType = value;
+            CellColor = Manager.ModeToVisual[(EditMode)value].color;
+            _previousColor = CellColor;
+            Astar.Path(value, this);
+        }
+    }
+
     private Material _material;
-    private Color _previousColor;
+    [SerializeField] private Color _cellColor;
+
+    private Color CellColor
+    {
+        get 
+        {
+            return _cellColor;
+        }
+        set
+        {
+            _cellColor = value;
+            _material.color = value;
+        }
+    }
+    [SerializeField] private Color _previousColor;
     void Awake()
     {
         _material = GetComponent<MeshRenderer>().material;
+        NodeType = NodeType.NonObstacle;
     }
 
     void OnMouseEnter()
     {
-        _previousColor = _material.color;
-        _material.color = Manager.CurrentColor;
+        _previousColor = CellColor;
+        CellColor = Manager.CurrentColor;
     }
 
     void OnMouseExit()
     {
-        _material.color = _previousColor;
+        CellColor = _previousColor;
     }
 
     void OnMouseDown()
     {
-        _previousColor = Manager.CurrentColor;
+        NodeType = (NodeType)Manager.CurrentMode;
     }
-
 }

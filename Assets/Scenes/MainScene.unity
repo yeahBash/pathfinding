@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 285315517}
   m_Layer: 0
   m_Name: Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -211,7 +211,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _modeProperties:
-  - {fileID: 11400000, guid: 06814c34ebd6b9940aecdca9136c13cd, type: 2}
   - {fileID: 11400000, guid: 8bf908d48424e94439405a28ba562f9b, type: 2}
   - {fileID: 11400000, guid: af01ca71f4985974a8ff7fce8935d247, type: 2}
   - {fileID: 11400000, guid: a4e6d6742a6d08e4e943cb118408fa51, type: 2}
@@ -219,8 +218,6 @@ MonoBehaviour:
   _buttonsLayout: {fileID: 1440923744}
   _buttonPrefab: {fileID: 6654830943743357549, guid: c3c3a68842e181a4eaf32817cfabee51,
     type: 3}
-  battleField: {fileID: 946481181}
-  astar: {fileID: 717515632}
 --- !u!4 &285315518
 Transform:
   m_ObjectHideFlags: 0
@@ -551,8 +548,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
-  m_SizeDelta: {x: 200, y: 1200}
+  m_AnchoredPosition: {x: 150, y: 0}
+  m_SizeDelta: {x: 200, y: 1400}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1440923744
 MonoBehaviour:

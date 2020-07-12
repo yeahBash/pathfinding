@@ -4,24 +4,35 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum Mode
+public enum EditMode
 {
-    Idle,
     Start,
     Finish,
     Obstacle,
     NonObstacle
 }
+public struct VisualOfMode
+{
+    public VisualOfMode(Texture2D tex, Color col)
+    {
+        texture = tex;
+        color = col;
+    }
+
+    public Texture2D texture;
+    public Color color;
+}
 
 public class Manager : MonoBehaviour
 {
     [SerializeField] private ModeProperties[] _modeProperties;
-    private static ModeProperties[] _modePropertiesStatic;
+    public static Dictionary<EditMode, VisualOfMode> ModeToVisual {get; private set;}
+
     [SerializeField] private VerticalLayoutGroup _buttonsLayout;
     [SerializeField] private GameObject _buttonPrefab;
-    private static Mode _currentMode;
+    private static EditMode _currentMode;
     public static Color CurrentColor {get; private set;}
-    public static Mode CurrentMode 
+    public static EditMode CurrentMode 
     {
         get 
         {
@@ -34,45 +45,51 @@ public class Manager : MonoBehaviour
         }
     }
 
-    public BattleField battleField;
-    public Astar astar;
-
     private void Start()
     {
-        _modePropertiesStatic = new ModeProperties[_modeProperties.Length];
-        _modeProperties.CopyTo(_modePropertiesStatic, 0);
-        SetButtons();
-        CurrentMode = Mode.Idle;
+        SetupButtonsAndVisual();
+
+        CurrentMode = EditMode.NonObstacle;
     }
 
-    private void SetButtons()
+    private void SetupButtonsAndVisual()
     {
+        ModeToVisual = new Dictionary<EditMode, VisualOfMode>();
+
         foreach (ModeProperties mp in _modeProperties)
-        {   if (mp.mode != Mode.Idle)
-            {
-                GameObject btnGo = Instantiate(_buttonPrefab);
-                btnGo.transform.SetParent(_buttonsLayout.transform);
-                btnGo.name = mp.mode.ToString();
+        {   
+            // instantiate buttons in canvas
+            SetButtons(mp);
 
-                Button btn = btnGo.GetComponent<Button>();
-                Image img = btnGo.GetComponent<Image>();
-
-                btn.onClick.AddListener(() => CurrentMode = mp.mode);
-                img.sprite = mp.buttonSprite;    
-            }
+            // setup visual
+            ModeToVisual[mp.mode] = new VisualOfMode(mp.cursorTexture, mp.cellColor);
         }
     }
 
-    private static void ChangeCursorAndColor(Mode md)
+    private void SetButtons(ModeProperties mp)
     {
-        ModeProperties modeProperties = Array.Find(_modePropertiesStatic, (x) => x.mode == md);
-        Cursor.SetCursor(modeProperties.cursorTexture, Vector3.zero, CursorMode.Auto);
-        CurrentColor = modeProperties.cellColor;
+        GameObject btnGo = Instantiate(_buttonPrefab);
+        btnGo.transform.SetParent(_buttonsLayout.transform);
+        btnGo.name = mp.mode.ToString();
+
+        Button btn = btnGo.GetComponent<Button>();
+        Image img = btnGo.GetComponent<Image>();
+
+        btn.onClick.AddListener(() => CurrentMode = mp.mode);
+        img.sprite = mp.buttonSprite;
+    }
+
+    private static void ChangeCursorAndColor(EditMode md)
+    {
+        Cursor.SetCursor(ModeToVisual[md].texture, Vector3.zero, CursorMode.Auto);
+        CurrentColor = ModeToVisual[md].color;
+        Debug.Log(CurrentColor);
+        Debug.Log(CurrentMode);
     }
 
     void OnValidate()
     {
-        int numberOfModes = Enum.GetNames(typeof(Mode)).Length;
+        int numberOfModes = Enum.GetNames(typeof(EditMode)).Length;
         if (_modeProperties.Length != numberOfModes)
         {
             Array.Resize(ref _modeProperties, numberOfModes);
