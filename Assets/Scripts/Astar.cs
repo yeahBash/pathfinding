@@ -3,21 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BattleField))]
 public class Astar : MonoBehaviour
 {
     private BattleField _battleField;
-    public static Action<NodeType, Node> OnBattleFieldChanged;
+    public static Action<NodeType, NodeType, Node> OnBattleFieldChanged;
     [SerializeField] private Node _startNode;
     [SerializeField] private Node _finishNode;
 
     void Start()
     {
         _battleField = GetComponent<BattleField>();
-        OnBattleFieldChanged += SetBattleFieldPoint;
+        OnBattleFieldChanged += SetBattleFieldNode;
     }
 
-    public void SetBattleFieldPoint(NodeType nodeType, Node node)
+    public void SetBattleFieldNode(NodeType previousNodeType, NodeType nodeType, Node node)
     {
+        if (previousNodeType == NodeType.Start) _startNode = null; 
+        if (previousNodeType == NodeType.Finish) _finishNode = null;
+
         switch(nodeType)
         {
             case NodeType.Start:
@@ -32,17 +36,8 @@ public class Astar : MonoBehaviour
 
                 _finishNode = node;
                 break;
-            /*case NodeType.Obstacle:
-                if (node.NodeType == NodeType.Start) _startNode = null; 
-                if (node.NodeType == NodeType.Finish) _finishNode = null;
-                break;
-            case NodeType.Walkable:
-                if (node.NodeType == NodeType.Start) _startNode = null; 
-                if (node.NodeType == NodeType.Finish) _finishNode = null;
-                break;*/
         }
 
-        Debug.Log(_startNode?.gameObject.name + " " + _finishNode?.gameObject.name);
         FindPath();
     }
 
@@ -50,6 +45,7 @@ public class Astar : MonoBehaviour
     {
         if (_startNode == null || _finishNode == null)
         {
+            _battleField.ResetPath();
             return;
         }
 

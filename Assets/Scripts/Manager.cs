@@ -91,7 +91,6 @@ public class Manager : MonoBehaviour
     {
         Cursor.SetCursor(EditModeToVisual[md].texture, Vector3.zero, CursorMode.Auto);
         CurrentColor = EditModeToVisual[md].color;
-        Debug.Log(CurrentColor);
         Debug.Log(CurrentEditMode);
     }
 

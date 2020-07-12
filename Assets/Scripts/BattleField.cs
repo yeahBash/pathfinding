@@ -14,6 +14,7 @@ public class BattleField : MonoBehaviour
     private Node[,] _nodes = new Node[BATTLEFIELD_SIZE, BATTLEFIELD_SIZE];
     [SerializeField] GameObject _cells;
     [SerializeField] GameObject _cellNode;
+    
     private void Awake()
     {
         _grid = GetComponent<Grid>();
@@ -28,18 +29,23 @@ public class BattleField : MonoBehaviour
 
     public void DrawPath(List<Node> path)
     {
+        ResetPath();
+        _path = path;
+        SetPathTexture(pathTexture);
+    }
+
+    public void ResetPath()
+    {
         if (_path != null)
         {
-            foreach (Node p in _path)
-            {
-                p.Texture = originalTexture;
-            }
+            SetPathTexture(originalTexture);
         }
-
-        _path = path;
+    }
+    private void SetPathTexture(Texture2D texture)
+    {
         foreach (Node p in _path)
         {
-            p.Texture = pathTexture;
+            p.Texture = texture;
         }
     }
 

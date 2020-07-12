@@ -10,6 +10,7 @@ public enum NodeType
     Obstacle,
     Walkable
 }
+[RequireComponent(typeof(MeshRenderer))]
 public class Node : MonoBehaviour
 {
     [SerializeField] private NodeType _nodeType;
@@ -93,8 +94,9 @@ public class Node : MonoBehaviour
         NodeType managerMode = (NodeType)Manager.CurrentEditMode;
         if (Manager.CurrentState == State.Idle && NodeType != managerMode)
         {
+            NodeType previousNodeType = NodeType;
             NodeType = managerMode;
-            Astar.OnBattleFieldChanged(NodeType, this);
+            Astar.OnBattleFieldChanged(previousNodeType, NodeType, this);
         }
     }
 }
