@@ -30,6 +30,8 @@ public class BattleField : MonoBehaviour
     void Start()
     {
         CreateBattleField();
+
+        // change camera size according to cell size and gap
         Camera.main.orthographicSize *= Mathf.Max(_grid.cellSize.x, _grid.cellSize.y) + Mathf.Max(_grid.cellGap.x, _grid.cellGap.y);
     }
 

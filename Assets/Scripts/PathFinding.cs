@@ -16,10 +16,10 @@ public class PathFinding : MonoBehaviour
     {
         _startNode = _finishNode = null;
         _battleField = GetComponent<BattleField>();
-        OnBattleFieldChanged += SetBattleFieldNode;
+        OnBattleFieldChanged += SetRoute;
     }
 
-    public void SetBattleFieldNode(NodeType previousNodeType, NodeType nodeType, Node node)
+    public void SetRoute(NodeType previousNodeType, NodeType nodeType, Node node)
     {
         if (previousNodeType == NodeType.Start) _startNode = null; 
         if (previousNodeType == NodeType.Finish) _finishNode = null;
