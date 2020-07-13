@@ -42,6 +42,7 @@ public class PathFinding : MonoBehaviour
 
         if (_startNode == null || _finishNode == null)
         {
+            text.text = " ";
             _battleField.ResetPath();
             return;
         }
